@@ -14,6 +14,21 @@ search: true
 
 Welcome to the Mekari Payment API!
 
+# Authentication
+
+> Example usage of authentication API 
+
+```shell
+curl --request GET \
+  --url https://payment-service-production.cd.jurnal.id/api/v2/invoices/10ffb09a-2b3d-497d-a55e-60bbc3d8dddd \
+  --header 'authorization: 24e9f230458541fb8f0c74c97734d000' \
+  --header 'content-type: application/json'
+```
+
+Mekari payment API use `authorization` key headers for the authentication. So the authentication format will be `authorization: {your_api_token}`.
+
+You should includes this `authorization` headers key to all request in mekari payment API.
+
 # Invoices
 
 ## Create New Invoice
@@ -76,7 +91,7 @@ customer_phone | `string` Phone number of customer. (e.g. 08123123123)
     }
   },
   "links": {
-    "self": "https://payment-staging.cd.jurnal.id/web/invoices/10ffb09a-2b3d-497d-a55e-60bbc3d8dddd"
+    "self": "https://payment-service-production.cd.jurnal.id/web/invoices/10ffb09a-2b3d-497d-a55e-60bbc3d8dddd"
   }
 }
 ```
@@ -146,7 +161,7 @@ GET /api/v2/invoices/:uuid
     }
   },
   "links": {
-    "self": "https://payment-staging.cd.jurnal.id/web/invoices/10ffb09a-2b3d-497d-a55e-60bbc3d8dddd"
+    "self": "https://payment-service-production.cd.jurnal.id/web/invoices/10ffb09a-2b3d-497d-a55e-60bbc3d8dddd"
   }
 }
 ```
@@ -265,7 +280,7 @@ status | `string` The invoice status. <br> **Note**: Available status: *void*, *
     }
   },
   "links": {
-    "self": "https://payment-staging.cd.jurnal.id/web/invoices/10ffb09a-2b3d-497d-a55e-60bbc3d8dddd"
+    "self": "https://payment-service-production.cd.jurnal.id/web/invoices/10ffb09a-2b3d-497d-a55e-60bbc3d8dddd"
   }
 }
 ```
