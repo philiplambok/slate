@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Unique header generation
 require './lib/unique_head.rb'
 

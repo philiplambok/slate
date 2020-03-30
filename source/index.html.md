@@ -3,13 +3,6 @@ title: API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
   - shell
-  - ruby
-  - python
-  - javascript
-
-toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='https://github.com/slatedocs/slate'>Documentation Powered by Slate</a>
 
 includes:
   - errors
@@ -19,221 +12,300 @@ search: true
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+Welcome to the Mekari Payment API!
 
-We have language bindings in Shell, Ruby, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
+# Invoices
 
-This example API documentation page was created with [Slate](https://github.com/slatedocs/slate). Feel free to edit it and use it as a base for your own API's documentation.
+## Create New Invoice
 
-# Authentication
-
-> To authorize, use this code:
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-```
+The enpoint for create a new invoice.
 
 ```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
+POST /api/v2/invoices
 ```
 
-```javascript
-const kittn = require('kittn');
+### Create Invoice Request 
 
-let api = kittn.authorize('meowmeowmeow');
-```
-
-> Make sure to replace `meowmeowmeow` with your API key.
-
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
-
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
-
-`Authorization: meowmeowmeow`
-
-<aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
-</aside>
-
-# Kittens
-
-## Get All Kittens
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
-
-```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
-```
-
-> The above command returns JSON structured like this:
+> Example of create invoice request:
 
 ```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
+{
+  "external_id": "invoice-sample-production-001",
+  "amount": 500000,
+  "description": "This is first sample invoice",
+  "due_date": "2010-05-20",
+  "company_name": "Mekari",
+  "customer_name": "Bill John",
+  "customer_email": "bill.john@mekari.com",
+  "customer_phone": "08123123123"
+}
+```
+
+Parameter | Description
+--------- |  -----------
+external_id | `string` An ID of your choice.
+amount |  `number` Amount end-customer will pay. 
+description | `string` The invoice description.
+due_date | `string` The invoice due date. Follows format: `YYYY-MM-DD`
+company_name | `string` The company name who created the invoice.
+customer_name | `string` The customer name who created the invoice.
+customer_email | `string` The customer email who created the invoice. <br> System will use this field to send email when payment was received.  
+customer_phone | `string` Phone number of customer. (e.g. 08123123123)
+
+### Create Invoice Response
+
+> Example of create invoice response:
+
+```json
+{
+  "data": {
+    "id": "10ffb09a-2b3d-497d-a55e-60bbc3d8dddd",
+    "type": "invoice",
+    "attributes": {
+      "uuid": "10ffb09a-2b3d-497d-a55e-60bbc3d8dddd",
+      "external_id": "invoice-sample-production-001",
+      "amount_formatted": "Rp 500.000,00",
+      "description": "This is first sample invoice",
+      "due_date": "2010-05-20T00:00:00.000Z",
+      "due_date_formatted": "20/05/2010",
+      "company_name": "Mekari",
+      "customer_name": "Bill John",
+      "customer_email": "bill.john@mekari.com",
+      "customer_phone": "08123123123",
+      "status": "unpaid"
+    }
   },
-  {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
+  "links": {
+    "self": "https://payment-staging.cd.jurnal.id/web/invoices/10ffb09a-2b3d-497d-a55e-60bbc3d8dddd"
   }
-]
-```
-
-This endpoint retrieves all kittens.
-
-### HTTP Request
-
-`GET http://example.com/api/kittens`
-
-### Query Parameters
-
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
-
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
-
-## Get a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
-```
-
-> The above command returns JSON structured like this:
-
-```json
-{
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
 }
 ```
 
-This endpoint retrieves a specific kitten.
+Parameter | Description
+--------- |  -----------
+uuid | `string` The invoice ID.
+external_id | `string` An ID of your choice.
+amount_formatted | `string` Invoice amount with formatted presentation.
+description | `string` The invoice description.
+due_date | `string` The invoice due date.
+due_date_formatted | `string` The invoice due date with formatted persentation. The format will follows: DD/MM/YYY.
+company_name | `string` The company's name who created the invoice.
+customer_name | `string` The customer's name who created the invoice.
+customer_email | `string` The customer's email who created the invoice.
+customer_phone | `string` Phone number of customer. (e.g. 08123123123)
+status | `string` The current status of invoice. 
+links | `Object` Link of invoice payment page.
 
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
+### Create Invoice Errors
 
-### HTTP Request
+List of posible error
 
-`GET http://example.com/kittens/<ID>`
+```json
+{
+  "errors": [
+    {
+      "code": "RecordInvalid",
+      "title": "external_id is invalid",
+      "details": "external_id sudah digunakan"
+    }
+  ]
+}
+```
+
+Name  | Description
+--------- | -----------
+RecordInvalid | Inputs are failing validation. The errors field contains details about which fields are violating validation.
+
+## Get a Specific Invoice
+
+The endpoint for show a spesific invoice detail.
+
+```shell
+GET /api/v2/invoices/:uuid
+```
+
+> Example of get a specific invoice response:
+
+```json
+{
+  "data": {
+    "id": "10ffb09a-2b3d-497d-a55e-60bbc3d8dddd",
+    "type": "invoice",
+    "attributes": {
+      "uuid": "10ffb09a-2b3d-497d-a55e-60bbc3d8dddd",
+      "external_id": "invoice-sample-production-001",
+      "amount_formatted": "Rp 500.000,00",
+      "description": "This is first sample invoice",
+      "due_date": "2010-05-20T00:00:00.000Z",
+      "due_date_formatted": "20/05/2010",
+      "company_name": "Mekari",
+      "customer_name": "Bill John",
+      "customer_email": "bill.john@mekari.com",
+      "customer_phone": "08123123123",
+      "status": "unpaid"
+    }
+  },
+  "links": {
+    "self": "https://payment-staging.cd.jurnal.id/web/invoices/10ffb09a-2b3d-497d-a55e-60bbc3d8dddd"
+  }
+}
+```
 
 ### URL Parameters
 
 Parameter | Description
 --------- | -----------
-ID | The ID of the kitten to retrieve
+uuid | The Invoice ID.
 
-## Delete a Specific Kitten
+### Get a Spesific Invoice Response
 
-```ruby
-require 'kittn'
+Parameter | Description
+--------- |  -----------
+uuid | `string` The invoice ID.
+external_id | `string` An ID of your choice.
+amount_formatted | `string` Invoice amount with formatted presentation.
+description | `string` The invoice description.
+due_date | `string` The invoice due date.
+due_date_formatted | `string` The invoice due date with formatted persentation. The format will follows: DD/MM/YYY.
+company_name | `string` The company's name who created the invoice.
+customer_name | `string` The customer's name who created the invoice.
+customer_email | `string` The customer's email who created the invoice.
+customer_phone | `string` Phone number of customer. (e.g. 08123123123)
+status | `string` The current status of invoice. 
+links | `Object` Link of invoice payment page.
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.delete(2)
-```
+### Get a Spesific Invoice Error
 
-```python
-import kittn
+List of posible error
 
-api = kittn.authorize('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2"
-  -X DELETE
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.delete(2);
-```
-
-> The above command returns JSON structured like this:
+> Example of get a spesific invoice error response
 
 ```json
 {
-  "id": 2,
-  "deleted" : ":("
+  "errors": [
+    {
+      "code": "RecordNotFound",
+      "title": "Invoice not found",
+      "details": "Couldn't find Invoice"
+    }
+  ]
 }
 ```
 
-This endpoint deletes a specific kitten.
+Parameter | Description
+--------- | -----------
+RecordNotFound | The invoice was not found in system.
 
-### HTTP Request
 
-`DELETE http://example.com/kittens/<ID>`
+## Update a Specific Invoice
+
+The endpoint for update a spesific invoice. 
+
+```shell
+PUT /api/v2/invoices/:uuid
+```
 
 ### URL Parameters
 
 Parameter | Description
 --------- | -----------
-ID | The ID of the kitten to delete
+uuid | The ID of the mekari payment invoice.
+
+### Update a Spesific Invoice Request
+
+> Example of update a spesific invoice request
+
+```json
+{
+  "external_id": "invoice-sample-production-001-updated",
+  "amount": 700000,
+  "description": "This is first sample invoice updated",
+  "due_date": "2010-06-20",
+  "company_name": "Mekari Updated",
+  "customer_name": "Bill John Updated",
+  "customer_email": "bill.john.updated@mekari.com",
+  "customer_phone": "081231231234",
+  "status": "expired"
+}
+```
+
+Parameter | Description
+--------- |  -----------
+external_id | `string` An ID of your choice.
+amount |  `number` Amount end-customer will pay. 
+description | `string` The invoice description.
+due_date | `string` The invoice due date.
+company_name | `string` The company name who creates the invoice
+customer_name | `string` The customer name who creates the invoice
+customer_email | `string` The customer email who cretes the invoice. System use this field to send email when payment was received.  
+customer_phone | `string` Phone number of customer. (e.g. 08123123123)
+status | `string` The invoice status. <br> **Note**: Available status: *void*, *expired*, *unpaid*, *paid*. 
+
+### Update a Spesific Invoice Response
+
+> Example of update a spesific invoice response
+
+```json
+{
+  "data": {
+    "id": "10ffb09a-2b3d-497d-a55e-60bbc3d8dddd",
+    "type": "invoice",
+    "attributes": {
+      "uuid": "10ffb09a-2b3d-497d-a55e-60bbc3d8dddd",
+      "external_id": "invoice-sample-production-001-updated",
+      "amount_formatted": "Rp 700.000,00",
+      "description": "This is first sample invoice updated",
+      "due_date": "2010-06-20T00:00:00.000Z",
+      "due_date_formatted": "20/06/2010",
+      "company_name": "Mekari Updated",
+      "customer_name": "Bill John Updated",
+      "customer_email": "bill.john.updated@mekari.com",
+      "customer_phone": "081231231234",
+      "status": "expired"
+    }
+  },
+  "links": {
+    "self": "https://payment-staging.cd.jurnal.id/web/invoices/10ffb09a-2b3d-497d-a55e-60bbc3d8dddd"
+  }
+}
+```
+
+Parameter | Description
+--------- |  -----------
+uuid | `string` The invoice ID.
+external_id | `string` An ID of your choice.
+amount_formatted | `string` Invoice amount with formatted presentation.
+description | `string` The invoice description.
+due_date | `string` The invoice due date.
+due_date_formatted | `string` The invoice due date with formatted persentation. The format will follows: DD/MM/YYY.
+company_name | `string` The company's name who created the invoice.
+customer_name | `string` The customer's name who created the invoice.
+customer_email | `string` The customer's email who created the invoice.
+customer_phone | `string` Phone number of customer. (e.g. 08123123123)
+status | `string` The current status of invoice. 
+links | `Object` Link of invoice payment page.
+
+### Update a Spesific Invoice Error
+
+> Example of update a spesific invoice error response
+
+```json
+{
+  "errors": [
+    {
+      "code": "CouldNotChangeInvoiceAmount",
+      "title": "Could not change invoice amount",
+      "details": "Invoice amount could not be changed because the invoice has already have virtual accounts, please generate the new invoice"
+    }
+  ]
+}
+```
+
+List of posible error
+
+Name | Description
+--------- |  -----------
+CouldNotChangeInvoiceAmount | Invoice amount could not be changed because the invoice has already have virtual accounts, please generate the new invoice
+CouldNotChangeInvoiceStatus | Invoice status should in list of *void*, *expired*, *unpaid*, *paid*.
+
 
